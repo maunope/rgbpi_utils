@@ -10,7 +10,7 @@ First very crude version, current capabilities:
 
 How to use:
 - clone https://github.com/libretro-thumbnails/
-- copy the the three Named_Titles, Named_Snaps, Named_Boxart folders in the same folder as map.sh
+- copy the the three Named_Titles, Named_Snaps, Named_Boxarts folders in the same folder as map.sh
 - run  sh map.sh %systemname% %outputfolder% sortedgames.dat, note that output folder will be erased a rebuilt from scratch
 - renamed files are in the output folder, the need resizing for optimal display quality, imagemagik (https://imagemagick.org/index.php) is a valid option,  mogrify -resize 300x225 *.png -quality 100 will resize all your image to fit rgbpi resolution
 
