@@ -16,6 +16,7 @@ How to use:
 
 Todo:
 - script the creation of sortedgames.dat instead of using a prebuilt one
+- cover remaining missed matches
 - script the resizing of images, I'm currently using Imagemagik offline, (mogrify -resize 300x225 *.png -quality 100)
 - remove hardcoded parameters and create tidy parameters input
 - automate the cloning of artwork repo
