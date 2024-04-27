@@ -1,7 +1,7 @@
 # rgbpi_artwork_matcher
 Some awk&amp;regexp magic to map  libretro artwork repository files to rgbpi OS game codes
 
-## First very crude version, current capabilities:**
+## First very crude version, current capabilities:
 
 - takes a set of png artwork images and creates copies matching rgppi namign scheme
 - creates box,ingame and title screen images
