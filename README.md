@@ -16,7 +16,7 @@ Some awk&amp;regexp magic to map  libretro artwork repository files to rgbpi OS 
 
 ## Todo:
 - script the creation of sortedgames.dat instead of using a prebuilt one
-- cover remaining missed matches
+- cover remaining missed matches, priority on partial matches, i.e "Monstone" vs "Monstone - A Hard Days Knight" (maybe finding a more suitable artwork set will do? )
 - script the resizing of images, I'm currently using Imagemagik offline
 - remove hardcoded parameters and create tidy parameters input
 - automate the cloning of artwork repo
