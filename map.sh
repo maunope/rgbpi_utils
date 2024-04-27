@@ -53,7 +53,7 @@ process_list() {
         region = "eur";
     }
    
-    print original_field"|"$0"|"search_key"|"region 
+    print original_field"|"search_key"|"region 
 } ' $input_file > $output_file
 }
 
@@ -104,9 +104,9 @@ process_list "Named_Titles.txt" "Prep_Named_Titles.txt" $platform
 
 #map with games.dat from rgbpi and output  fields required for renaming only
 #todo automate the creation of preprocessed $match_file
-join -t '|' -1 3 -2 1  Prep_Named_Boxarts.txt $match_file |  awk  -F "|" {'print $2"|"$4"|"$6'} > Out_Named_Boxarts.txt
-join -t '|' -1 3 -2 1  Prep_Named_Snaps.txt $match_file  |  awk  -F "|"  {'print $2"|"$4"|"$6'} > Out_Named_Snaps.txt
-join -t '|' -1 3 -2 1  Prep_Named_Titles.txt $match_file  | awk  -F "|"  {'print $2"|"$4"|"$6'} > Out_Named_Titles.txt
+join -t '|' -1 2 -2 1  Prep_Named_Boxarts.txt $match_file |  awk  -F "|" {'print $2"|"$3"|"$5'} > Out_Named_Boxarts.txt
+join -t '|' -1 2 -2 1  Prep_Named_Snaps.txt $match_file  |  awk  -F "|"  {'print $2"|"$3"|"$5'} > Out_Named_Snaps.txt
+join -t '|' -1 2 -2 1  Prep_Named_Titles.txt $match_file  | awk  -F "|"  {'print $2"|"$3"|"$5'} > Out_Named_Titles.txt
 
 
 #clean old results
