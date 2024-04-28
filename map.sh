@@ -3,6 +3,8 @@
 ## usage:  sh map.sh %systemname% %outputfolder% sortedgames.dat, note that output folder will be erased a rebuilt from scratch
 ##
 
+#!/bin/bash
+
 ##given a list of image files stored in a file, outputs the intermediate csv file required to map them to rgbpi format
 prepareImagesList() {
     local InputFile="$1"
@@ -105,9 +107,10 @@ copyFiles() {
 # Function to display usage instructions
 usage() {
     echo "Usage: $0 Platform OutputFolder MatchFile [--debug] [--resize]"
-    echo "param1, param2, param3:  Required positional parameters"
+    echo "Platform, Output Folder, games.dat (prepped) file:  Required positional parameters"
     echo "--debug: if set, doesn't delete temp files and copy images"
     echo "--resize: if set, uses Imagemagick to resize images to fit a 240p screen, skipped in debug mode"
+    echo "--sourcefolder: if set, searched for Box Art, Snaps and Title Screens in its sufbolders"
     exit 1  # Exit with an error code if usage is incorrect
 }
 
@@ -124,6 +127,7 @@ MatchFile=$3
 # Initialize variables for optional parameters
 Debug=false
 Resize=false
+SourceFolder=.
 
 # Parse optional parameters
 while [[ $# -gt 3 ]]; do
@@ -137,6 +141,10 @@ while [[ $# -gt 3 ]]; do
             Resize=true
             shift # Shift to the next argument
             ;;
+        --sourcefolder=*)
+            SourceFolder="${key#*=}" 
+            shift # Shift to the next argument
+            ;;
         *)
             echo "Error: Unknown option $key"
             usage
@@ -145,22 +153,23 @@ while [[ $# -gt 3 ]]; do
 done
 
 
-#todo make these three parametric
-ls ./Named_Boxarts/*.png > Named_Boxarts.tmp
-ls ./Named_Snaps/*.png > Named_Snaps.tmp
-ls ./Named_Titles/*.png > Named_Titles.tmp
+shopt -s nocaseglob
+ls $SourceFolder/*boxarts/*.png > boxarts.tmp
+ls $SourceFolder/*snaps/*.png > snaps.tmp
+ls $SourceFolder/*titles/*.png > titles.tmp
+shopt -u nocaseglob
 
 
 #create intermediate input, processed images list
-prepareImagesList "Named_Boxarts.tmp" "Prep_Named_Boxarts.tmp" 
-prepareImagesList "Named_Snaps.tmp" "Prep_Named_Snaps.tmp" 
-prepareImagesList "Named_Titles.tmp" "Prep_Named_Titles.tmp" 
+prepareImagesList "boxarts.tmp" "prep_boxarts.tmp" 
+prepareImagesList "snaps.tmp" "prep_snaps.tmp" 
+prepareImagesList "titles.tmp" "prep_titles.tmp" 
 
 #map with games.dat from rgbpi and output  fields required for renaming only
 #todo automate the creation of preprocessed $MatchFile
-createMatches Prep_Named_Boxarts.tmp Out_Named_Boxarts.tmp $MatchFile Unmatched_Named_Boxarts.out $Platform
-createMatches Prep_Named_Snaps.tmp Out_Named_Snaps.tmp $MatchFile Unmatched_Named_Snaps.out $Platform
-createMatches Prep_Named_Titles.tmp Out_Named_Titles.tmp $MatchFile Unmatched_Named_Titles.out $Platform
+createMatches prep_boxarts.tmp Out_boxarts.tmp $MatchFile Unmatched_boxarts.out $Platform
+createMatches prep_snaps.tmp Out_snaps.tmp $MatchFile Unmatched_snaps.out $Platform
+createMatches prep_titles.tmp Out_titles.tmp $MatchFile Unmatched_titles.out $Platform
 
 
 
@@ -171,9 +180,9 @@ if [ "$Debug" != true ]; then
     rm -rf $OutputFolder
     mkdir $OutputFolder
 
-    copyFiles Out_Named_Boxarts.tmp box $OutputFolder
-    copyFiles Out_Named_Snaps.tmp ingame $OutputFolder
-    copyFiles Out_Named_Titles.tmp title $OutputFolder
+    copyFiles Out_boxarts.tmp box $OutputFolder
+    copyFiles Out_snaps.tmp ingame $OutputFolder
+    copyFiles Out_titles.tmp title $OutputFolder
 
     #clean the workbench
     rm *.tmp
