@@ -6,8 +6,9 @@
 Named_Boxarts/
 Named_Snaps/
 Named_Titles/
-output*/
-copyme*/
+output*/*
+input/*
+copyme*/*
 
 launcher.sh
 unsortedsep.dat
@@ -19,3 +20,6 @@ original games.dat
 .DS_Store
 shortsortedgames.dat
 
+
+
+input/mastersystem/Sega_-_Master_System_-_Mark_III
