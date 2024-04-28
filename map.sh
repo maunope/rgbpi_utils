@@ -7,10 +7,9 @@
 prepareImagesList() {
     local InputFile="$1"
     local OutputFile="$2"
-    local Platform="$3"
 
-    awk -F'|' -v Platform="$Platform" 'BEGIN {OFS="|"}{
- 
+    awk -F'|' 'BEGIN {OFS="|"}{
+
     ImageFilename = $1;  # Store the original first field
     
     # Replace .png with .zip
@@ -31,7 +30,6 @@ prepareImagesList() {
     # Remove spaces
     gsub(/ /, "", $0);
 
-    $0 = $0"_"Platform;
 
     # Extract file name only
     split($0, PathParts, "/");
@@ -58,16 +56,14 @@ createMatches() {
     local OutputFile="$2"
     local MatchFile="$3"
     local UnmacthedFile="$4"
-    local UnamtchedFilePlatformFilter="$5"
+    local Platform="$5"
 
-    join -t '|' -1 2 -2 1 $InputFile $MatchFile | awk -F "|" {'print $2"|"$3"|"$5'} >$OutputFile
+    #temp file with only games for the current platform, platform is the 5th field in the match file
+    awk -F '|' '$4 == "'"$Platform"'" {print}' "$MatchFile" > ./temp_filtered_gamesdat.tmp
 
-    #create list of unmatched files
-    #temp file with only games for the current platform, platform is the 5th field in
-    awk -F '|' '$5 == "'"$UnamtchedFilePlatformFilter"'" {print}' "$MatchFile" > ./temp_filtered_gamesdat.tmp
-    
-    #do an inner and outer join and the keep the differences
+    join -t '|' -1 2 -2 1 $InputFile ./temp_filtered_gamesdat.tmp | awk -F "|" {'print $2"|"$3"|"$4'}  > $OutputFile
 
+    #create list of unmatched files: do an inner and outer join and the keep the differences
     join -a2  -t '|' -1 2 -2 1 $InputFile ./temp_filtered_gamesdat.tmp | sort  > ./temp_right_join.tmp
     join -a1  -t '|' -1 2 -2 1 $InputFile ./temp_filtered_gamesdat.tmp | sort  > ./temp_left_join.tmp
     
@@ -112,9 +108,9 @@ OutputFolder=$2
 MatchFile=$3
 
 #create intermediate input, processed images list
-prepareImagesList "Named_Boxarts.tmp" "Prep_Named_Boxarts.tmp" $Platform
-prepareImagesList "Named_Snaps.tmp" "Prep_Named_Snaps.tmp" $Platform
-prepareImagesList "Named_Titles.tmp" "Prep_Named_Titles.tmp" $Platform
+prepareImagesList "Named_Boxarts.tmp" "Prep_Named_Boxarts.tmp" 
+prepareImagesList "Named_Snaps.tmp" "Prep_Named_Snaps.tmp" 
+prepareImagesList "Named_Titles.tmp" "Prep_Named_Titles.tmp" 
 
 #map with games.dat from rgbpi and output  fields required for renaming only
 #todo automate the creation of preprocessed $MatchFile
@@ -133,4 +129,4 @@ copyFiles Out_Named_Snaps.tmp ingame $OutputFolder
 copyFiles Out_Named_Titles.tmp title $OutputFolder
 
 #clean the workbench
-#rm *.tmp
+rm *.tmp
