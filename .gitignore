@@ -1,10 +1,15 @@
 *.tmp
 *.out
+*.gz
+
 Named_Boxarts/
 Named_Snaps/
 Named_Titles/
 output*/
+copyme*/
 
+launcher.sh
 unsortedsep.dat
 boxart - games.dat.tsv
 BUsortedgames.dat
+*.DS_store
