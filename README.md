@@ -6,7 +6,7 @@ Some awk&amp;regexp magic to map  libretro artwork repository files to rgbpi OS 
 - Root access to rgbpi is required to write images, you can use rgbpi_extras to get it (https://github.com/sd2cv/RGBPi-Extra/)
 - (optional) install imagemagick to resize images
 
-## First very crude version, current capabilities:
+## First  crude version, current capabilities:
 
 - takes a set of png artwork images and creates copies matching rgppi namign scheme
 - creates box,ingame and title screen images
@@ -23,6 +23,14 @@ Some awk&amp;regexp magic to map  libretro artwork repository files to rgbpi OS 
 - run  `sh rgbpi_images_map.sh Platform OutputFolder MatchFile [--debug] [--resize] [--sourcefolder=SourceFolder]`, note that output folder **will be erased** a rebuilt from scratch, **Platform**  must match one of the system names present in the prepped **games.dat** file (sortedgames.dat is prebuilt and comes with this repository)
 - sample: `sh rgbpi_images_map.sh megadrive  output_megadrive  sortedgames.dat  --sourcefolder=./megadrive`
 - renamed files are in the output folder, the need resizing for optimal display quality, imagemagik (https://imagemagick.org/index.php) is a valid option,  `mogrify -resize 300x225 *.png -quality 100` will resize all your image to fit rgbpi resolution
+
+## Dang! it's not matching all images!
+In order for images to match game codes, the .png filename must follow the same format as the rom filename, the script covers many mismatch cases, but fails for names that differ too much, e.g.
+"Speedball 2 - Brutal Deluxe" is not matched to "Speedball 2".
+there's still tons of improvement, but creating matches based on file names only has intrinsic limits, if you're not getting that specific image for that game you play a lost matched, the best workaround is to rename individual png files, i.e:
+`mv Speedball\ 2\ -\ Brutal\ Deluxe.png Speedball\ 2.png`
+will do the trick.
+
 
 ## Todo:
 
