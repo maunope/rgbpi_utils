@@ -25,12 +25,13 @@ Some awk&amp;regexp magic to map  libretro artwork repository files to rgbpi OS 
 - renamed files are in the output folder, the need resizing for optimal display quality, imagemagik (https://imagemagick.org/index.php) is a valid option,  `mogrify -resize 300x225 *.png -quality 100` will resize all your image to fit rgbpi resolution
 
 ## Todo:
-- script the creation of sortedgames.dat instead of using a prebuilt one
+
 - cover remaining missed matches, priority on partial matches, i.e "Monstone" vs "Monstone - A Hard Days Knight" (maybe finding a more suitable artwork set will do? )
-- ~~script the resizing of images, I'm currently using Imagemagik offline~~
-- ~~remove hardcoded parameters and create tidy parameters input~~
-- ~~allow multiple matches for the same image~~
 - automate the cloning of artwork repo
 - enable the matching of several systems simultaneously
 - define and implement some criteria to pick the best image when more than one is available for the same game/platform/locale
-- "World" cover overrides "eur", give precedence to eur if available
+- "world" cover overrides "eur", give precedence to eur if available
+- ~~script the creation of sortedgames.dat instead of using a prebuilt one~~
+- ~~script the resizing of images, I'm currently using Imagemagik offline~~
+- ~~remove hardcoded parameters and create tidy parameters input~~
+- ~~allow multiple matches for the same image~~

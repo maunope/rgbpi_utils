@@ -5,6 +5,53 @@
 
 #!/bin/bash
 
+
+##given a rgbpi games.dat formatted file it adds a colum with a key to match images and sorts it
+##TODO refactor code  duplicated  with prepareImagesList
+prepareMatchesFile() {
+
+    local InputFile="$1"
+    local OutputFile="$2"
+
+    #switch to pipe separated, remove double quotes and start the awk fun
+    sed  -e 's/","/|/g'  -e 's/"//g'  $InputFile | awk -F'|' 'BEGIN {OFS="|"}{
+    SearchKey=$5
+
+    # Extract file name only
+    split(SearchKey, PathParts, "/");
+    SearchKey = PathParts[length(PathParts)];
+    
+    #strip version info from amiga games, .i.e v2.0_AGA_1337.lha
+    gsub(/_v[0-9](\.[0-9]+)*\.[0-9][^\.]*.(lha|zip)/,"", SearchKey);
+
+    # Strip round and square brackets and their contents
+    gsub(/(\[[^\]]*\]|\([^\)]*\))/,"", SearchKey);   
+
+    # Strip extension
+    gsub(/\.[a-z|A-Z|0-9]{3}$/, "", SearchKey);
+
+    # Strip ", The"
+    gsub(/, The/, "", SearchKey);
+
+    # Strip ", A"
+    gsub(/, A/, "", SearchKey);
+
+    # Strip specified characters, 047 is single '' 
+    gsub(/["\047!_?\-&]/, "", SearchKey);
+
+    # Remove spaces
+    gsub(/ /, "",SearchKey);
+
+    #lower case
+    SearchKey=tolower(SearchKey)
+   
+    print SearchKey"|"$0
+
+    } ' | sort  >$OutputFile
+}
+
+
+
 ##given a list of image files stored in a file, outputs the intermediate csv file required to map them to rgbpi format
 prepareImagesList() {
     local InputFile="$1"
@@ -16,6 +63,9 @@ prepareImagesList() {
     
     # Strip round and square brackets and their contents
     gsub(/(\[[^\]]*\]|\([^\)]*\))/,"", $0);   
+
+    #strip AGA|ALG|RTG from name ending, for amiga games
+    gsub(/ (AGA|ALG|RTG)\.png/,"", $0);
 
     # Strip ".png"
     gsub(/\.png$/, "", $0);
@@ -37,6 +87,9 @@ prepareImagesList() {
     split($0, PathParts, "/");
     SearchKey = PathParts[length(PathParts)];
 
+    #lower case
+    SearchKey=tolower(SearchKey)
+
 
     # Determine region code
     if (ImageFilename ~ /\((Japan|JAPAN|japan|jap)\)/) {
@@ -47,7 +100,7 @@ prepareImagesList() {
         Region = "eur";
     }
    
-    print ImageFilename"|"SearchKey"|"Region 
+    print SearchKey"|"ImageFilename"|"Region 
 } ' $InputFile >$OutputFile
 }
 
@@ -64,11 +117,11 @@ createMatches() {
     #temp file with only games for the current platform, platform is the 5th field in the match file
     awk -F '|' '$4 == "'"$Platform"'" {print}' "$MatchFile" > ./temp_filtered_gamesdat.tmp
 
-    join -t '|' -1 2 -2 1 $InputFile ./temp_filtered_gamesdat.tmp | awk -F "|" {'print $2"|"$3"|"$4'}  | sort | uniq  > $OutputFile
+    join -t '|' -1 1 -2 1 $InputFile ./temp_filtered_gamesdat.tmp | awk -F "|" {'print $2"|"$3"|"$4'}  | sort | uniq  > $OutputFile
 
     #create list of unmatched files: do an inner and outer join and the keep the differences
-    join -a2  -t '|' -1 2 -2 1 $InputFile ./temp_filtered_gamesdat.tmp | sort  | uniq > ./temp_right_join.tmp
-    join -a1  -t '|' -1 2 -2 1 $InputFile ./temp_filtered_gamesdat.tmp | sort | uniq  > ./temp_left_join.tmp
+    join -a2  -t '|' -1 1 -2 1 $InputFile ./temp_filtered_gamesdat.tmp | sort  | uniq > ./temp_right_join.tmp
+    join -a1  -t '|' -1 1 -2 1 $InputFile ./temp_filtered_gamesdat.tmp | sort | uniq  > ./temp_left_join.tmp
     
     comm -23 temp_left_join.tmp temp_right_join.tmp | sort | uniq > ./$OutputFolder/$UnmacthedFile
 }
@@ -100,9 +153,6 @@ copyFiles() {
         fi
     done <"$InputFile"
 }
-
-
-
 
 # Function to display usage instructions
 usage() {
@@ -153,6 +203,9 @@ while [[ $# -gt 3 ]]; do
 done
 
 
+prepareMatchesFile $MatchFile prep_match_file.tmp
+
+
 shopt -s nocaseglob
 ls $SourceFolder/*boxarts/*.png > boxarts.tmp
 ls $SourceFolder/*snaps/*.png > snaps.tmp
@@ -167,10 +220,9 @@ prepareImagesList "titles.tmp" "prep_titles.tmp"
 
 #map with games.dat from rgbpi and output  fields required for renaming only
 #todo automate the creation of preprocessed $MatchFile
-createMatches prep_boxarts.tmp Out_boxarts.tmp $MatchFile Unmatched_boxarts.out $Platform
-createMatches prep_snaps.tmp Out_snaps.tmp $MatchFile Unmatched_snaps.out $Platform
-createMatches prep_titles.tmp Out_titles.tmp $MatchFile Unmatched_titles.out $Platform
-
+createMatches prep_boxarts.tmp out_boxarts.tmp prep_match_file.tmp unmatched_boxarts.out $Platform
+createMatches prep_snaps.tmp out_snaps.tmp prep_match_file.tmp unmatched_snaps.out $Platform
+createMatches prep_titles.tmp out_titles.tmp prep_match_file.tmp unmatched_titles.out $Platform
 
 
 #output remapped files
@@ -180,9 +232,9 @@ if [ "$Debug" != true ]; then
     rm -rf $OutputFolder
     mkdir $OutputFolder
 
-    copyFiles Out_boxarts.tmp box $OutputFolder
-    copyFiles Out_snaps.tmp ingame $OutputFolder
-    copyFiles Out_titles.tmp title $OutputFolder
+    copyFiles out_boxarts.tmp box $OutputFolder
+    copyFiles out_snaps.tmp ingame $OutputFolder
+    copyFiles out_titles.tmp title $OutputFolder
 
     #clean the workbench
     rm *.tmp
