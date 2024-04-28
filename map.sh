@@ -99,15 +99,57 @@ copyFiles() {
     done <"$InputFile"
 }
 
+
+
+
+# Function to display usage instructions
+usage() {
+    echo "Usage: $0 Platform OutputFolder MatchFile [--debug] [--resize]"
+    echo "param1, param2, param3:  Required positional parameters"
+    echo "--debug: if set, doesn't delete temp files and copy images"
+    echo "--resize: if set, uses Imagemagick to resize images to fit a 240p screen, skipped in debug mode"
+    exit 1  # Exit with an error code if usage is incorrect
+}
+
+# Check for the correct number of positional parameters
+if [[ $# -lt 3 ]]; then
+    usage
+fi
+
+# Assign positional parameters to variables
+Platform=$1
+OutputFolder=$2
+MatchFile=$3
+
+# Initialize variables for optional parameters
+Debug=false
+Resize=false
+
+# Parse optional parameters
+while [[ $# -gt 3 ]]; do
+    key="$4"
+    case $key in
+        --debug)
+            Debug=true
+            shift # Shift to the next argument
+            ;;
+        --resize)
+            Resize=true
+            shift # Shift to the next argument
+            ;;
+        *)
+            echo "Error: Unknown option $key"
+            usage
+            ;;
+    esac
+done
+
+
 #todo make these three parametric
 ls ./Named_Boxarts/*.png > Named_Boxarts.tmp
 ls ./Named_Snaps/*.png > Named_Snaps.tmp
 ls ./Named_Titles/*.png > Named_Titles.tmp
 
-Platform=$1
-OutputFolder=$2
-MatchFile=$3
-Debug=$4
 
 #create intermediate input, processed images list
 prepareImagesList "Named_Boxarts.tmp" "Prep_Named_Boxarts.tmp" 
@@ -123,17 +165,32 @@ createMatches Prep_Named_Titles.tmp Out_Named_Titles.tmp $MatchFile Unmatched_Na
 
 
 #output remapped files
-if [ "$Debug" != "debug" ]; then
+if [ "$Debug" != true ]; then
+
     #clean old results
-    #todo make this optional
     rm -rf $OutputFolder
     mkdir $OutputFolder
+
     copyFiles Out_Named_Boxarts.tmp box $OutputFolder
     copyFiles Out_Named_Snaps.tmp ingame $OutputFolder
     copyFiles Out_Named_Titles.tmp title $OutputFolder
 
     #clean the workbench
     rm *.tmp
+
+    if [ "$Resize" = true ]; then
+        if which mogrify >/dev/null; then
+            echo "Resizing images to 300x225, this may take a while."
+            mogrify -resize 300x225 ./$OutputFolder/*.png -quality 100
+        else
+            echo "Please install Imagemagick to enable resizing of images, https://imagemagick.org/index.php"
+        fi
+    fi
 else
     echo "Debug mode, skipped file copy and left temp files on disk"
 fi
+
+
+
+
+

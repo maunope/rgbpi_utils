@@ -9,7 +9,7 @@ Some awk&amp;regexp magic to map  libretro artwork repository files to rgbpi OS 
 - matches names covering the majority of required correction (i.e. stripping special chars, version numbers, etc.)
 
 ## How to use:
-- clone https://github.com/libretro-thumbnails/
+- clone https://github.com/libretro-thumbnails/libretro-thumbnails
 - some dataset, like amiga artwork, get better mapping percentage from other sources, i.e. https://forums.launchbox-app.com/files/file/3533-media-pack-commodore-amiga-damiend-collection/
 - copy the the three Named_Titles, Named_Snaps, Named_Boxarts folders from a system of your choice (i.e. amiga) in the same folder as map.sh
 - run  `sh map.sh %systemname% %outputfolder% sortedgames.dat`, note that output folder will be erased a rebuilt from scratch, systemname must match one of the system names present in the games.dat file
