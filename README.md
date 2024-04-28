@@ -10,6 +10,7 @@ Some awk&amp;regexp magic to map  libretro artwork repository files to rgbpi OS 
 
 ## How to use:
 - clone https://github.com/libretro-thumbnails/
+- some dataset, like amiga artwork, get better mapping percentage from other sources, i.e. https://forums.launchbox-app.com/files/file/3533-media-pack-commodore-amiga-damiend-collection/
 - copy the the three Named_Titles, Named_Snaps, Named_Boxarts folders from a system of your choice (i.e. amiga) in the same folder as map.sh
 - run  `sh map.sh %systemname% %outputfolder% sortedgames.dat`, note that output folder will be erased a rebuilt from scratch, systemname must match one of the system names present in the games.dat file
 - renamed files are in the output folder, the need resizing for optimal display quality, imagemagik (https://imagemagick.org/index.php) is a valid option,  `mogrify -resize 300x225 *.png -quality 100` will resize all your image to fit rgbpi resolution
@@ -21,3 +22,4 @@ Some awk&amp;regexp magic to map  libretro artwork repository files to rgbpi OS 
 - remove hardcoded parameters and create tidy parameters input
 - automate the cloning of artwork repo
 - enable the matching of several systems simultaneously
+- define and implement some criteria to pick the best image when more than one is available for the same game/platform/locale
