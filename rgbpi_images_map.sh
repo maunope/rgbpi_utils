@@ -101,12 +101,13 @@ prepareImagesList() {
     }
    
     print SearchKey"|"ImageFilename"|"Region 
-} ' $InputFile >$OutputFile
+} ' $InputFile  | sort >$OutputFile
 }
 
-#
+
 # joins intermediate images list and outputs it to a file containing the game identifier, the region and the original file name. all lines
 # in the same file are for the same media type, it is also assumed that all images are for the same platform
+# Expect both InputFile and MatchFile to be sorted
 createMatches() {
     local InputFile="$1"
     local OutputFile="$2"
@@ -115,9 +116,9 @@ createMatches() {
     local Platform="$5"
 
     #temp file with only games for the current platform, platform is the 5th field in the match file
-    awk -F '|' '$4 == "'"$Platform"'" {print}' "$MatchFile" > ./temp_filtered_gamesdat.tmp
+    awk -F '|' '$4 == "'"$Platform"'" {print}' "$MatchFile"  > ./temp_filtered_gamesdat.tmp
 
-    join -t '|' -1 1 -2 1 $InputFile ./temp_filtered_gamesdat.tmp | awk -F "|" {'print $2"|"$3"|"$4'}  | sort | uniq  > $OutputFile
+    join -t '|' -1 1 -2 1  $InputFile ./temp_filtered_gamesdat.tmp | awk -F "|" {'print $2"|"$3"|"$4'}  | sort | uniq  > $OutputFile
 
     #create list of unmatched files: do an inner and outer join and the keep the differences
     join -a2  -t '|' -1 1 -2 1 $InputFile ./temp_filtered_gamesdat.tmp | sort  | uniq > ./temp_right_join.tmp
