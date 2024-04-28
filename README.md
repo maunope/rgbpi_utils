@@ -27,7 +27,7 @@ Some awk&amp;regexp magic to map  libretro artwork repository files to rgbpi OS 
 ## Dang! it's not matching all images!
 In order for images to match game codes, the .png filename must follow the same format as the rom filename, the script covers many mismatch cases, but fails for names that differ too much, e.g.
 "Speedball 2 - Brutal Deluxe" is not matched to "Speedball 2".
-there's still tons of room for improvement, but creating matches based on file names only comes with intrinsic limits, if you're not getting that specific image for that game you play a lost matched, the best workaround is to rename individual png files, i.e:
+there's still tons of room for improvement, but creating matches based on file names only comes with intrinsic limits, if you're not getting that specific image for that one game you keep playing matched, the best workaround is to rename individual png files, i.e:
 `mv Speedball\ 2\ -\ Brutal\ Deluxe.png Speedball\ 2.png`
 will do the trick.
 
