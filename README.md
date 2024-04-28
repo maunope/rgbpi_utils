@@ -1,6 +1,11 @@
 # rgbpi_artwork_matcher
 Some awk&amp;regexp magic to map  libretro artwork repository files to rgbpi OS game codes
 
+## Prerequisites:
+
+- Root access to rgbpi is required to write images, you can use rgbpi_extras to get it (https://github.com/sd2cv/RGBPi-Extra/)
+- (optional) install imagemagick to resize images
+
 ## First very crude version, current capabilities:
 
 - takes a set of png artwork images and creates copies matching rgppi namign scheme
@@ -9,6 +14,7 @@ Some awk&amp;regexp magic to map  libretro artwork repository files to rgbpi OS 
 - matches names covering the majority of required correction (i.e. stripping special chars, version numbers, etc.)
 
 ## How to use:
+- **backup your existing images folder**
 - clone https://github.com/libretro-thumbnails/libretro-thumbnails
 - some dataset, like amiga artwork, get better mapping percentage from other sources, i.e. https://forums.launchbox-app.com/files/file/3533-media-pack-commodore-amiga-damiend-collection/
 - provide three folders for Box Art, Title Screen and Snaps, Libretro Thumbnails repo comes in this form. any name will do as long as it ends with `[boaxrts|snaps|titles]`
@@ -23,6 +29,7 @@ Some awk&amp;regexp magic to map  libretro artwork repository files to rgbpi OS 
 - cover remaining missed matches, priority on partial matches, i.e "Monstone" vs "Monstone - A Hard Days Knight" (maybe finding a more suitable artwork set will do? )
 - ~~script the resizing of images, I'm currently using Imagemagik offline~~
 - ~~remove hardcoded parameters and create tidy parameters input~~
+- ~~allow multiple matches for the same image~~
 - automate the cloning of artwork repo
 - enable the matching of several systems simultaneously
 - define and implement some criteria to pick the best image when more than one is available for the same game/platform/locale

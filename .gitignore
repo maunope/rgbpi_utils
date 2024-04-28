@@ -1,6 +1,7 @@
 *.tmp
 *.out
 *.gz
+*.csv
 
 Named_Boxarts/
 Named_Snaps/
@@ -13,3 +14,8 @@ unsortedsep.dat
 boxart - games.dat.tsv
 BUsortedgames.dat
 *.DS_store
+.DS_Store
+original games.dat
+.DS_Store
+shortsortedgames.dat
+
