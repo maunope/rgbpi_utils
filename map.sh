@@ -120,13 +120,14 @@ createMatches Prep_Named_Boxarts.tmp Out_Named_Boxarts.tmp $MatchFile Unmatched_
 createMatches Prep_Named_Snaps.tmp Out_Named_Snaps.tmp $MatchFile Unmatched_Named_Snaps.out $Platform
 createMatches Prep_Named_Titles.tmp Out_Named_Titles.tmp $MatchFile Unmatched_Named_Titles.out $Platform
 
-#clean old results
-#todo make this optional
-rm -rf $OutputFolder
-mkdir $OutputFolder
+
 
 #output remapped files
 if [ "$Debug" != "debug" ]; then
+    #clean old results
+    #todo make this optional
+    rm -rf $OutputFolder
+    mkdir $OutputFolder
     copyFiles Out_Named_Boxarts.tmp box $OutputFolder
     copyFiles Out_Named_Snaps.tmp ingame $OutputFolder
     copyFiles Out_Named_Titles.tmp title $OutputFolder
