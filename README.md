@@ -6,7 +6,7 @@ Some awk&amp;regexp magic to map  libretro artwork repository files to rgbpi OS 
 - Root access to rgbpi is required to write images, you can use rgbpi_extras to get it (https://github.com/sd2cv/RGBPi-Extra/)
 - (optional) install imagemagick to resize images
 
-## First very crude version, current capabilities:
+## First  crude version, current capabilities:
 
 - takes a set of png artwork images and creates copies matching rgppi namign scheme
 - creates box,ingame and title screen images
@@ -24,9 +24,17 @@ Some awk&amp;regexp magic to map  libretro artwork repository files to rgbpi OS 
 - sample: `sh rgbpi_images_map.sh megadrive  output_megadrive  sortedgames.dat  --sourcefolder=./megadrive`
 - renamed files are in the output folder, the need resizing for optimal display quality, imagemagik (https://imagemagick.org/index.php) is a valid option,  `mogrify -resize 300x225 *.png -quality 100` will resize all your image to fit rgbpi resolution
 
+## Dang! it's not matching all images!
+In order for images to match game codes, the .png filename must follow the same format as the rom filename, the script covers many mismatch cases, but fails for names that differ too much, e.g.
+"Speedball 2 - Brutal Deluxe" is not matched to "Speedball 2".
+there's still tons of room for improvement, but creating matches based on file names only comes with intrinsic limits, if you're not getting that specific image for that one game you keep playing matched, the best workaround is to rename individual png files, i.e:
+`mv Speedball\ 2\ -\ Brutal\ Deluxe.png Speedball\ 2.png`
+will do the trick.
+
+
 ## Todo:
 
-- cover remaining missed matches, priority on partial matches, i.e "Monstone" vs "Monstone - A Hard Days Knight" (maybe finding a more suitable artwork set will do? )
+- cover remaining missed matches, this dat repo looks like the best option as it matches libretro artwork repo filenames with rom filenames, that would remove the need for search keys creation altogether. https://github.com/libretro/libretro-database/blob/master/dat/Nintendo%20-%20GameCube.dat
 - automate the cloning of artwork repo
 - enable the matching of several systems simultaneously
 - define and implement some criteria to pick the best image when more than one is available for the same game/platform/locale
