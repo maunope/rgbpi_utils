@@ -34,7 +34,7 @@ will do the trick.
 
 ## Todo:
 
-- cover remaining missed matches, priority on partial matches, i.e "Monstone" vs "Monstone - A Hard Days Knight" (maybe finding a more suitable artwork set will do? )
+- cover remaining missed matches, this dat repo looks like the best option as it matches libretro artwork repo filenames with rom filenames, that would remove the need for search keys creation altogether. https://github.com/libretro/libretro-database/blob/master/dat/Nintendo%20-%20GameCube.dat
 - automate the cloning of artwork repo
 - enable the matching of several systems simultaneously
 - define and implement some criteria to pick the best image when more than one is available for the same game/platform/locale
