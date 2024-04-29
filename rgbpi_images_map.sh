@@ -233,6 +233,7 @@ if [ "$Debug" != true ]; then
     rm -rf $OutputFolder
     mkdir $OutputFolder
 
+    #do the actual copies
     copyFiles out_boxarts.tmp box $OutputFolder
     copyFiles out_snaps.tmp ingame $OutputFolder
     copyFiles out_titles.tmp title $OutputFolder
@@ -245,11 +246,11 @@ if [ "$Debug" != true ]; then
             echo "Resizing images to 300x225, this may take a while."
             mogrify -resize 300x225 ./$OutputFolder/*.png -quality 100
         else
-            echo "Please install Imagemagick to enable resizing of images, https://imagemagick.org/index.php"
+            echo "Please install Imagemagick to enable images resizing, https://imagemagick.org/index.php"
         fi
     fi
 else
-    echo "Debug mode, skipped file copy and left temp files on disk"
+    echo "Debug mode, skipped files copy and left temp files on disk"
 fi
 
 
