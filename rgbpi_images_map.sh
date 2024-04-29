@@ -30,14 +30,16 @@ prepareMatchesFile() {
     # Strip extension
     gsub(/\.[a-z|A-Z|0-9]{3}$/, "", SearchKey);
 
-    # Strip ", The"
+    # Strip ", The" and "The "
     gsub(/, The/, "", SearchKey);
+    gsub(/^The /, "", SearchKey);
 
-    # Strip ", A"
+    # Strip ", A" "A "
     gsub(/, A/, "", SearchKey);
+    gsub(/\/A /, "", SearchKey);
 
     # Strip specified characters, 047 is single '' 
-    gsub(/["\047!_?\-&]/, "", SearchKey);
+    gsub(/["\047!_?\-&\-\.]/, "", SearchKey);
 
     # Remove spaces
     gsub(/ /, "",SearchKey);
@@ -53,39 +55,44 @@ prepareMatchesFile() {
 
 
 ##given a list of image files stored in a file, outputs the intermediate csv file required to map them to rgbpi format
+## if ImageLookupFile is passed, does a double pass replacing the prepped image filename search keys with what's available in the lookup file
+## besides using image filenames.
 prepareImagesList() {
     local InputFile="$1"
     local OutputFile="$2"
+    local LookupFile="$3"
 
     awk -F'|' 'BEGIN {OFS="|"}{
-
     ImageFilename = $1;  # Store the original first field
     
-    # Strip round and square brackets and their contents
-    gsub(/(\[[^\]]*\]|\([^\)]*\))/,"", $0);   
-
-    #strip AGA|ALG|RTG from name ending, for amiga games
-    gsub(/ (AGA|ALG|RTG)\.png/,"", $0);
-
-    # Strip ".png"
-    gsub(/\.png$/, "", $0);
-
-    # Strip ", The"
-    gsub(/, The/, "", $0);
-
-    # Strip ", A"
-    gsub(/, A/, "", $0);
-
-    # Strip specified characters, 047 is single '' 
-    gsub(/["\047!_?\-&]/, "", $0);
-
-    # Remove spaces
-    gsub(/ /, "", $0);
-
+    SearchKey=$0
 
     # Extract file name only
-    split($0, PathParts, "/");
+    split(SearchKey, PathParts, "/");
     SearchKey = PathParts[length(PathParts)];
+    
+    # Strip round and square brackets and their contents
+    gsub(/(\[[^\]]*\]|\([^\)]*\))/,"", SearchKey);   
+
+    #strip AGA|ALG|RTG from name ending, for amiga games
+    gsub(/ (AGA|ALG|RTG)\.png/,"", SearchKey);
+
+    # Strip ".png"
+    gsub(/\.png$/, "", SearchKey);
+
+    # Strip ", The" and "The "
+    gsub(/, The/,"", SearchKey);
+    gsub(/^The /,"", SearchKey);
+
+    # Strip ", A" "A "
+    gsub(/, A/,"", SearchKey);
+    gsub(/\/A /,"", SearchKey);
+
+    # Strip specified characters, 047 is single '' 
+    gsub(/["\047!_?\-&\.]/, "", SearchKey);
+
+    # Remove spaces
+    gsub(/ /, "", SearchKey);
 
     #lower case
     SearchKey=tolower(SearchKey)
@@ -99,9 +106,23 @@ prepareImagesList() {
     } else {
         Region = "eur";
     }
-   
     print SearchKey"|"ImageFilename"|"Region 
 } ' $InputFile  | sort -t '|' -k1,1 >$OutputFile
+
+
+ # if a remap file is passed, use it to replace search keys coming form image names with the corresponding value in the lookup file, this 
+ # is useful for datasets where image names are very different from rom names, but a lookup table is available. the lookup table is expected 
+ # to have prepped values, see the awk above
+ if [[ $ImageLookupFile ]]; then
+    # future me, sorry for this headache factory, remember to list fields you want to output explicitly here
+    awk -F'|' 'FNR==NR {LookUpArray[$1]=$2;next} { if($1 in LookUpArray){$1=LookUpArray[$1]}else{$1=$1} print $1"|"$2"|"$3  }' $ImageLookupFile $OutputFile  |  sort -t '|' -k1,1 > LookedUpArray.tmp
+    cat  $OutputFile >> LookedUpArray.tmp 
+    cat LookedUpArray.tmp  | sort -t '|' -k1,1 | uniq > $OutputFile  
+ fi
+
+ 
+
+
 }
 
 
@@ -117,7 +138,7 @@ createMatches() {
 
     #temp file with only games for the current platform, platform is the 5th field in the match file
     awk -F '|' '$4 == "'"$Platform"'" {print}' "$MatchFile"  > ./temp_filtered_gamesdat.tmp
-
+    
     join -t '|' -1 1 -2 1  $InputFile ./temp_filtered_gamesdat.tmp | awk -F "|" {'print $2"|"$3"|"$4'}  | sort -t '|' -k1,1 | uniq  > $OutputFile
 
     #create list of unmatched files: do an inner and outer join and the keep the differences
@@ -157,9 +178,10 @@ copyFiles() {
 
 # Function to display usage instructions
 usage() {
-    echo "Usage: $0 Platform OutputFolder MatchFile [--debug] [--resize]"
+    echo "Usage: $0 Platform OutputFolder MatchFile [--debug] [--imagelookupfile=] [--resize] [--sourcefolder=] "
     echo "Platform, Output Folder, games.dat (prepped) file:  Required positional parameters"
     echo "--debug: if set, doesn't delete temp files and copy images"
+    echo "--imagelookupfile: if set, uses a lookup file to replace images prep filenames key"
     echo "--resize: if set, uses Imagemagick to resize images to fit a 240p screen, skipped in debug mode"
     echo "--sourcefolder: if set, searched for Box Art, Snaps and Title Screens in its sufbolders"
     exit 1  # Exit with an error code if usage is incorrect
@@ -179,6 +201,7 @@ MatchFile=$3
 Debug=false
 Resize=false
 SourceFolder=.
+ImageLookupFile=
 
 # Parse optional parameters
 while [[ $# -gt 3 ]]; do
@@ -186,6 +209,10 @@ while [[ $# -gt 3 ]]; do
     case $key in
         --debug)
             Debug=true
+            shift # Shift to the next argument
+            ;;
+        --imagelookupfile=*)
+            ImageLookupFile="${key#*=}" 
             shift # Shift to the next argument
             ;;
         --resize)
@@ -221,9 +248,9 @@ prepareImagesList "titles.tmp" "prep_titles.tmp"
 
 #map with games.dat from rgbpi and output  fields required for renaming only
 #todo automate the creation of preprocessed $MatchFile
-createMatches prep_boxarts.tmp out_boxarts.tmp prep_match_file.tmp unmatched_boxarts.out $Platform
-createMatches prep_snaps.tmp out_snaps.tmp prep_match_file.tmp unmatched_snaps.out $Platform
-createMatches prep_titles.tmp out_titles.tmp prep_match_file.tmp unmatched_titles.out $Platform
+createMatches prep_boxarts.tmp out_boxarts.tmp prep_match_file.tmp unmatched_boxarts.out $Platform $ImageLookupFile
+createMatches prep_snaps.tmp out_snaps.tmp prep_match_file.tmp unmatched_snaps.out $Platform $ImageLookupFile
+createMatches prep_titles.tmp out_titles.tmp prep_match_file.tmp unmatched_titles.out $Platform $ImageLookupFile
 
 
 #output remapped files
