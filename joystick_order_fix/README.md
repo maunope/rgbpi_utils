@@ -8,11 +8,11 @@ get swapped, often causing game menu button to sto working as a side effect. Thi
 
 ## Current capabilities:
 - Fixes joystick swaps at boot on RGBPI Jamma cards
-- Logs to /opt/rgbpi/ui/logs/error.log if order fixing was required
+- Logs to `/opt/rgbpi/ui/logs/error.log` if order fixing was required
 
 ## How to use:
 - **ONLY USE WITH RGBPU JAMMA CARDS** this script hasn't been tested on any othe device, plus, it's only useful there
-- copy fix_joystick_order.py to /opt/rgbpi/ui/, backup /opt/rgbpi/autostart.sh and replace it with autostart.sh from this repo, enjoy consisten joystick assignment :-) 
+- copy `fix_joystick_order.py` to `/opt/rgbpi/ui/`, backup `/opt/rgbpi/autostart.sh` and replace it with `autostart.sh` from this repo, enjoy consisten joystick assignment :-) 
 
 
 ## Todo:
