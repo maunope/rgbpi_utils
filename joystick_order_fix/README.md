@@ -12,8 +12,9 @@ get swapped, often causing game menu button to sto working as a side effect. Thi
 
 ## How to use:
 - **ONLY USE WITH RGBPU JAMMA CARDS** this script hasn't been tested on any othe device, plus, it's only useful there
-- copy `fix_joystick_order.py` to `/opt/rgbpi/ui/`, backup `/opt/rgbpi/autostart.sh` and replace it with `autostart.sh` from this repo, enjoy consisten joystick assignment :-) 
+- installer installs, uninstaller uninstalls. fix will be effective from next reboot.
 
 
 ## Todo:
-- prepare install/uninstall scripts
+-  ~~prepare install/uninstall scripts~~
+
