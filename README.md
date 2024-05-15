@@ -3,11 +3,11 @@ Some utilities to improve your RGB-PI OS4 (https://www.rgb-pi.com/#os) experienc
 
 ## Prerequisites:
 
-- Root access to rgbpi is required for all utils, you can use rgbpi_extras to get it (https://github.com/sd2cv/RGBPi-Extra/)
+- Root access to RGBPI is required for all utils, you can use rgbpi_extras to get it (https://github.com/sd2cv/RGBPi-Extra/)
 
 ## artwork_matcher
 
-- a tool to match artwork sets to rgbpi OS game ids, filling gaps in OS4's built in artwork set
+- a tool to match artwork sets to RGBPI OS game ids, filling gaps in OS4's built in artwork set
 - creates box,ingame and title screen images
 - creates USA/EUR/JAP versions, defaults to EUR if the region can't be determined
 - matches names covering the majority of required correction (i.e. stripping special chars, version numbers, etc.)

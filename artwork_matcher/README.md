@@ -3,7 +3,7 @@ Some awk&amp;regexp magic to map  libretro artwork repository files to rgbpi OS 
 
 ## Prerequisites:
 
-- Root access to rgbpi is required to write images, you can use rgbpi_extras to get it (https://github.com/sd2cv/RGBPi-Extra/)
+- Root access to RGBPI is required to write images, you can use rgbpi_extras to get it (https://github.com/sd2cv/RGBPi-Extra/)
 - (optional) install imagemagick to resize images
 
 ## First  version, current capabilities:
@@ -23,7 +23,7 @@ Some awk&amp;regexp magic to map  libretro artwork repository files to rgbpi OS 
 - **important** only PNG images are processed
 - run  `sh rgbpi_images_map.sh Platform OutputFolder MatchFile [--debug] [--resize] [--sourcefolder=] [--imagelookupfile=]`, note that output folder **will be erased** a rebuilt from scratch, **Platform**  must match one of the system names present in the prepped **games.dat** file (sortedgames.dat is prebuilt and comes with this repository)
 - sample: `sh rgbpi_images_map.sh megadrive  output_megadrive  sortedgames.dat  --sourcefolder=./megadrive`
-- renamed files are in the output folder, the need resizing for optimal display quality, imagemagik (https://imagemagick.org/index.php) is a valid option,  `mogrify -resize 300x225 *.png -quality 100` will resize all your image to fit rgbpi resolution
+- renamed files are in the output folder, the need resizing for optimal display quality, imagemagik (https://imagemagick.org/index.php) is a valid option,  `mogrify -resize 300x225 *.png -quality 100` will resize all your image to fit RGBPI resolution
 - a lookup file for amiga is provided (amiga_names.dat), based on https://github.com/libretro/libretro-database.git content. 
 
 ## Dang! it's not matching all images!
