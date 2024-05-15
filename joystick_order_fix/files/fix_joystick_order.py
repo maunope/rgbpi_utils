@@ -27,7 +27,7 @@ while JoyOk==False and GiveUp==False:
                 print("fix_joystick_order.py attempting to fix joystick order, found js1 on devicepath ",device.device_path," attempt #",Attempts, file=sys.stderr)
                 JoyOk=False
                 if Attempts>=MaxAttemps:
-                    print("fix_joystick_order.py attempting to fix joystick order, found js1 on devicepath ",device.device_path," attempt #",Attempts, file=sys.stderr)
+                    print("fix_joystick_order.py giving up, too many attempts, js1 and js2 will remain swapped for this boot", file=sys.stderr)
                     GiveUp=True
                 break
         JoyOk=True
