@@ -16,7 +16,7 @@ while JoyOk==False and GiveUp==False:
     pygame.joystick.quit()
     pygame.joystick.init()
 
-    devices = context.list_devices(subsystem='tty')
+    devices = pyudev.Context().list_devices(subsystem='tty')
     for device in pyudev.Context().list_devices(subsystem='input'): 
         is_joystick = '/dev/input/js' in device.get('DEVNAME', 'None')
         if is_joystick:
