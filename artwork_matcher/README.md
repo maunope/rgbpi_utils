@@ -38,6 +38,7 @@ will do the trick.
 ## Todo:
 
 - ~~cover remaining missed matches, this dat repo looks like the best option as it matches libretro artwork repo filenames with rom filenames, that would remove the need for search keys creation altogether. https://github.com/libretro/libretro-database/blob/master/dat/Nintendo%20-%20GameCube.dat~~
+- optimize to use game names in scraper.dat for better lookup results
 - automate the creation of prepped lookup files based on libretro db repository content
 - automate the cloning of artwork repo
 - enable the matching of several systems simultaneously
