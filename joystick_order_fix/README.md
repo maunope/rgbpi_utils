@@ -2,6 +2,10 @@
 Some python magic to address the pesky "swapped joysticks" issue plaguing RGBPI Jamma cards: approximately once every 10 boots (YMMV) Joystick 1 and Joystick 2
 get swapped, often causing game menu button to stop working as a side effect. This script checks joysticks ordering before RGBPI ui starts, and fixes it if required.
 
+## Alternative fix:
+The same fix in this script has been ported to JammaPi drivers, https://github.com/forkymcforkface/JammaPi/tree/master. building on OS4 is tricky as needed tools have been removed from the image,
+it's been reported to work fine on PI5 port, though.
+
 ## Prerequisites:
 
 - Root access to RGBPI OS is required, you can use rgbpi_extras to get it (https://github.com/sd2cv/RGBPi-Extra/)
